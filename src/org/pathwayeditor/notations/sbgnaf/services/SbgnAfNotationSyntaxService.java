@@ -36,6 +36,7 @@ import org.pathwayeditor.notationsubsystem.toolkit.definition.ShapeObjectType;
 
 public class SbgnAfNotationSyntaxService implements INotationSyntaxService {
 	private static final int NUM_ROOT_OTS = 1;
+	private static final char TAU = 964;
 	private static final String UNIT_OF_INFO_DEFN = 
 		"(C) setanchor\n" +
 		"curbounds /h exch def /w exch def /y exch def /x exch def\n"
@@ -180,6 +181,13 @@ public class SbgnAfNotationSyntaxService implements INotationSyntaxService {
 		"0 xoffset 0.50 yoffset -0.20 xoffset 0.50 yoffset line\n" +
 		"1.20 xoffset 0.50 yoffset 1.00 xoffset 0.50 yoffset line\n" +
 		"[-0.2 xoffset 0.5 yoffset 1.2 xoffset 0.5 yoffset ] (S) setanchor\n";
+	private static final String DELAY_SHAPE_DEFN =
+		"curbounds /h exch def /w exch def /y exch def /x exch def\n"
+		+ "/xoffset { w mul x add } def /yoffset { h mul y add } def\n"
+		+ "x y w h oval h 0.35 mul setfontsize null setfillcol 0.5 xoffset 0.5 yoffset (C) ("+TAU+") text\n" +
+		"0 xoffset 0.50 yoffset -0.20 xoffset 0.50 yoffset line\n" +
+		"1.20 xoffset 0.50 yoffset 1.00 xoffset 0.50 yoffset line\n" +
+		"[-0.2 xoffset 0.5 yoffset 1.2 xoffset 0.5 yoffset ] (S) setanchor\n";
 	private static final String OR_SHAPE_DEFN = "curbounds /h exch def /w exch def /y exch def /x exch def\n"
 			+ "/xoffset { w mul x add } def /yoffset { h mul y add } def\n"
 			+ "x y w h oval h 0.35 mul setfontsize null setfillcol 0.5 xoffset 0.5 yoffset (C) (OR) text\n" +
@@ -214,6 +222,7 @@ public class SbgnAfNotationSyntaxService implements INotationSyntaxService {
 	private ShapeObjectType AndGate;
 	private ShapeObjectType OrGate;
 	private ShapeObjectType NotGate;
+	private ShapeObjectType Delay;
 
 	// links
 //	private LinkObjectType Consumption;
@@ -278,6 +287,8 @@ public class SbgnAfNotationSyntaxService implements INotationSyntaxService {
 		createOrGate();
 		this.NotGate = new ShapeObjectType(this, 125, "NOT");
 		createNotGate();
+		this.Delay = new ShapeObjectType(this, 126, "Delay");
+		createDelay();
 
 		defineParentingRMO();
 		// shapes parenting
@@ -302,6 +313,7 @@ public class SbgnAfNotationSyntaxService implements INotationSyntaxService {
 		defineParentingAndGate();
 		defineParentingOrGate();
 		defineParentingNotGate();
+		defineParentingDelay();
 
 		// links
 //		this.Consumption = new LinkObjectType(this, 20, "Consumption");
@@ -344,6 +356,7 @@ public class SbgnAfNotationSyntaxService implements INotationSyntaxService {
 		this.shapes.put(this.AndGate.getUniqueId(), this.AndGate);
 		this.shapes.put(this.OrGate.getUniqueId(), this.OrGate);
 		this.shapes.put(this.NotGate.getUniqueId(), this.NotGate);
+		this.shapes.put(this.Delay.getUniqueId(), this.Delay);
 
 		// link set
 //		this.links.put(this.Consumption.getUniqueId(), this.Consumption);
@@ -467,7 +480,7 @@ public class SbgnAfNotationSyntaxService implements INotationSyntaxService {
 		set.addAll(Arrays.asList(new IShapeObjectType[] { this.Activity,
 				this.Compartment,  this.Perturbation,
 				this.Observable, this.AndGate, this.OrGate,
-				this.NotGate }));
+				this.NotGate,this.Delay }));
 		for (IShapeObjectType child : set) {
 			this.rmo.getParentingRules().addChild(child);
 		}
@@ -637,7 +650,7 @@ public class SbgnAfNotationSyntaxService implements INotationSyntaxService {
 		set.addAll(Arrays.asList(new IShapeObjectType[] { this.Activity,
 				this.Compartment, this.Perturbation,
 				this.Observable, this.AndGate, this.OrGate,
-				this.NotGate }));
+				this.NotGate,this.Delay }));
 		for (IShapeObjectType child : set) {
 			this.Compartment.getParentingRules().addChild(child);
 		}
@@ -1303,6 +1316,43 @@ public class SbgnAfNotationSyntaxService implements INotationSyntaxService {
 	public ShapeObjectType getNotGate() {
 		return this.NotGate;
 	}
+
+
+	private void createDelay() {
+		this.Delay.setDescription("Delay Operator");// ment to be
+														// TypeDescription
+														// rather
+		this.Delay.getDefaultAttributes().setShapeDefinition(DELAY_SHAPE_DEFN);
+		this.Delay.getDefaultAttributes().setFillColour(RGB.WHITE);
+		this.Delay.getDefaultAttributes().setSize(new Dimension(30, 30));
+		this.Delay.getDefaultAttributes().setLineWidth(1);
+		this.Delay.getDefaultAttributes().setLineStyle(LineStyle.SOLID);
+		this.Delay.getDefaultAttributes().setLineColour(RGB.BLACK);
+
+		EnumSet<EditableShapeAttributes> editableAttributes = EnumSet
+				.noneOf(EditableShapeAttributes.class);
+		if (true) {
+			editableAttributes.add(EditableShapeAttributes.FILL_COLOUR);
+		}
+		if (true) {
+			editableAttributes.add(EditableShapeAttributes.SHAPE_SIZE);
+		}
+		if (true) {
+			editableAttributes.add(EditableShapeAttributes.LINE_WIDTH);
+		}
+		if (true) {
+			editableAttributes.add(EditableShapeAttributes.LINE_COLOUR);
+		}
+		this.Delay.setEditableAttributes(editableAttributes);
+	}
+
+	private void defineParentingDelay() {
+		this.Delay.getParentingRules().clear();
+	}
+
+	public ShapeObjectType getDelay() {
+		return this.Delay;
+	}
 //
 //	private void createConsumption() {
 //		Set<IShapeObjectType> set = null;
@@ -1642,6 +1692,10 @@ public class SbgnAfNotationSyntaxService implements INotationSyntaxService {
 			this.Modulation.getLinkConnectionRules().addConnection(
 					this.NotGate, tgt);
 		}
+		for (IShapeObjectType tgt : set) {
+			this.Modulation.getLinkConnectionRules().addConnection(
+					this.Delay, tgt);
+		}
 
 	}
 
@@ -1761,6 +1815,10 @@ public class SbgnAfNotationSyntaxService implements INotationSyntaxService {
 //			this.Stimulation.getLinkConnectionRules().addConnection(
 //					this.NotGate, tgt);
 //		}
+		for (IShapeObjectType tgt : set) {
+			this.Stimulation.getLinkConnectionRules().addConnection(
+					this.Delay, tgt);
+		}
 
 	}
 
@@ -1988,6 +2046,10 @@ public class SbgnAfNotationSyntaxService implements INotationSyntaxService {
 			this.Inhibition.getLinkConnectionRules().addConnection(
 					this.NotGate, tgt);
 		}
+		for (IShapeObjectType tgt : set) {
+			this.Inhibition.getLinkConnectionRules().addConnection(
+					this.Delay, tgt);
+		}
 
 	}
 
@@ -2083,6 +2145,10 @@ public class SbgnAfNotationSyntaxService implements INotationSyntaxService {
 			this.Trigger.getLinkConnectionRules().addConnection(this.NotGate,
 					tgt);
 		}
+		for (IShapeObjectType tgt : set) {
+			this.Trigger.getLinkConnectionRules().addConnection(
+					this.Delay, tgt);
+		}
 
 	}
 
@@ -2162,7 +2228,7 @@ public class SbgnAfNotationSyntaxService implements INotationSyntaxService {
 
 		set = new HashSet<IShapeObjectType>();
 		set.addAll(Arrays.asList(new IShapeObjectType[] { this.AndGate,
-				this.OrGate, this.NotGate }));
+				this.OrGate, this.NotGate, this.Delay }));
 		for (IShapeObjectType tgt : set) {
 			this.LogicArc.getLinkConnectionRules().addConnection(this.Activity,
 					tgt);
@@ -2181,6 +2247,10 @@ public class SbgnAfNotationSyntaxService implements INotationSyntaxService {
 		}
 		for (IShapeObjectType tgt : set) {
 			this.LogicArc.getLinkConnectionRules().addConnection(this.NotGate,
+					tgt);
+		}
+		for (IShapeObjectType tgt : set) {
+			this.LogicArc.getLinkConnectionRules().addConnection(this.Delay,
 					tgt);
 		}
 
