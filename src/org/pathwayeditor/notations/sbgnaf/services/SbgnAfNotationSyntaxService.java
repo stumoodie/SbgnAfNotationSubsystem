@@ -41,7 +41,8 @@ public class SbgnAfNotationSyntaxService implements INotationSyntaxService {
 		"(C) setanchor\n" +
 		"curbounds /h exch def /w exch def /y exch def /x exch def\n"
 			+ "x y w h rect";
-	private static final String STATE_DEFN = "curbounds /h exch def /w exch def /y exch def /x exch def\n"
+	private static final String STATE_DEFN = 		"(C) setanchor\n" +
+			"curbounds /h exch def /w exch def /y exch def /x exch def\n"
 			+ "x y w h oval";
 	private static final String SIMPLE_CHEM_DEFN =
 		"(C) setanchor\n" +
@@ -56,7 +57,8 @@ public class SbgnAfNotationSyntaxService implements INotationSyntaxService {
 		"(C) setanchor\n" +
 		"curbounds /h exch def /w exch def /y exch def /x exch def\n"
 			+ "x y w h oval";
-	private static final String COMPARTMENT_DEFN = "curbounds /h exch def /w exch def /y exch def /x exch def\n"
+	private static final String COMPARTMENT_DEFN = 		"(C) setanchor\n" +
+			"curbounds /h exch def /w exch def /y exch def /x exch def\n"
 			+ "/xoffset { w mul x add } def /yoffset { h mul y add } def\n"
 			+ "gsave null setlinecol\n"
 			+ "x 0.10 yoffset w 0.80 h mul rect\n"
@@ -686,9 +688,19 @@ public class SbgnAfNotationSyntaxService implements INotationSyntaxService {
 		return nameProp;
 	}
 	
+	private IPlainTextPropertyDefinition createENameProperty(){
+		PlainTextPropertyDefinition nameProp = new PlainTextPropertyDefinition("entity", "");
+		nameProp.setAlwaysDisplayed(true);
+		nameProp.setEditable(true);
+		nameProp.setDisplayName("Entity");
+		nameProp.getLabelDefaults().setNoFill(true);
+		nameProp.getLabelDefaults().setNoBorder(true);
+		return nameProp;
+	}
+	
 	
 	private void createComplex() {
-		this.Complex.getDefaultAttributes().addPropertyDefinition(createNameProperty());
+		this.Complex.getDefaultAttributes().addPropertyDefinition(createENameProperty());
 		this.Complex.getDefaultAttributes().addPropertyDefinition(createCardinalityProperty());
 		this.Complex.getDefaultAttributes().setShapeDefinition(COMPLEX_DEFN);
 		this.Complex.getDefaultAttributes().setFillColour(RGB.WHITE);
@@ -728,7 +740,7 @@ public class SbgnAfNotationSyntaxService implements INotationSyntaxService {
 																			// be
 																			// TypeDescription
 																			// rather
-		this.GeneticUnit.getDefaultAttributes().addPropertyDefinition(createNameProperty());
+		this.GeneticUnit.getDefaultAttributes().addPropertyDefinition(createENameProperty());
 		this.GeneticUnit.getDefaultAttributes().setShapeDefinition(NUCLEIC_ACID_FEATURE_DEFN);
 		this.GeneticUnit.getDefaultAttributes().setFillColour(RGB.WHITE);
 		this.GeneticUnit.getDefaultAttributes().setSize(new Dimension(30, 20));
@@ -766,7 +778,7 @@ public class SbgnAfNotationSyntaxService implements INotationSyntaxService {
 		this.Macromolecule.setDescription("Macromolecule");// ment to be
 															// TypeDescription
 															// rather
-		this.Macromolecule.getDefaultAttributes().addPropertyDefinition(createNameProperty());
+		this.Macromolecule.getDefaultAttributes().addPropertyDefinition(createENameProperty());
 		this.Macromolecule.getDefaultAttributes().setShapeDefinition(MACROMOLECULE_DEFN);
 		this.Macromolecule.getDefaultAttributes().setFillColour(RGB.WHITE);
 		this.Macromolecule.getDefaultAttributes().setLineColour(RGB.BLACK);
@@ -805,7 +817,7 @@ public class SbgnAfNotationSyntaxService implements INotationSyntaxService {
 		this.SimpleChem.setDescription("Simple chemical");// ment to be
 															// TypeDescription
 															// rather
-		this.SimpleChem.getDefaultAttributes().addPropertyDefinition(createNameProperty());
+		this.SimpleChem.getDefaultAttributes().addPropertyDefinition(createENameProperty());
 		this.SimpleChem.getDefaultAttributes().addPropertyDefinition(createCardinalityProperty());
 		this.SimpleChem.getDefaultAttributes().setShapeDefinition(SIMPLE_CHEM_DEFN);
 		this.SimpleChem.getDefaultAttributes().setFillColour(RGB.WHITE);
@@ -844,7 +856,7 @@ public class SbgnAfNotationSyntaxService implements INotationSyntaxService {
 		this.UnspecEntity.setDescription("Unspecified entity");// ment to be
 																// TypeDescription
 																// rather
-		this.UnspecEntity.getDefaultAttributes().addPropertyDefinition(createNameProperty());
+		this.UnspecEntity.getDefaultAttributes().addPropertyDefinition(createENameProperty());
 		this.UnspecEntity.getDefaultAttributes().setShapeDefinition(UNSPECIFIED_ENTITY_DEFN);
 		this.UnspecEntity.getDefaultAttributes().setFillColour(RGB.WHITE);
 		this.UnspecEntity.getDefaultAttributes().setSize(new Dimension(30, 20));
@@ -2008,7 +2020,7 @@ public class SbgnAfNotationSyntaxService implements INotationSyntaxService {
 		}
 		// sport.getDefaultAttributes().setColourEditable(true);
 		sport.setEditableAttributes(editablesportAttributes);
-		tport.getDefaultAttributes().setGap((short) 5);
+		tport.getDefaultAttributes().setGap((short) 10);
 		tport.getDefaultAttributes().setEndDecoratorType(
 				LinkEndDecoratorShape.BAR);// , 5,5);
 		tport.getDefaultAttributes().setEndSize(new Dimension(5, 5));
@@ -2033,6 +2045,8 @@ public class SbgnAfNotationSyntaxService implements INotationSyntaxService {
 		for (IShapeObjectType tgt : set) {
 			this.Inhibition.getLinkConnectionRules().addConnection(
 					this.Perturbation, tgt);
+			this.Inhibition.getLinkConnectionRules().addConnection(
+					this.Activity, tgt);
 		}
 		for (IShapeObjectType tgt : set) {
 			this.Inhibition.getLinkConnectionRules().addConnection(
@@ -2132,6 +2146,8 @@ public class SbgnAfNotationSyntaxService implements INotationSyntaxService {
 		for (IShapeObjectType tgt : set) {
 			this.Trigger.getLinkConnectionRules().addConnection(
 					this.Perturbation, tgt);
+			this.Trigger.getLinkConnectionRules().addConnection(
+					this.Activity, tgt);
 		}
 		for (IShapeObjectType tgt : set) {
 			this.Trigger.getLinkConnectionRules().addConnection(this.AndGate,
