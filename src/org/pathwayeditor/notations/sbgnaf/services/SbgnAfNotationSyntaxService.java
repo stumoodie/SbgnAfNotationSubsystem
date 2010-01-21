@@ -1,6 +1,5 @@
 package org.pathwayeditor.notations.sbgnaf.services;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
@@ -29,7 +28,6 @@ import org.pathwayeditor.figure.geometry.Dimension;
 import org.pathwayeditor.notationsubsystem.toolkit.definition.IntegerPropertyDefinition;
 import org.pathwayeditor.notationsubsystem.toolkit.definition.LinkObjectType;
 import org.pathwayeditor.notationsubsystem.toolkit.definition.LinkTerminusDefinition;
-import org.pathwayeditor.notationsubsystem.toolkit.definition.NumberPropertyDefinition;
 import org.pathwayeditor.notationsubsystem.toolkit.definition.PlainTextPropertyDefinition;
 import org.pathwayeditor.notationsubsystem.toolkit.definition.RootObjectType;
 import org.pathwayeditor.notationsubsystem.toolkit.definition.ShapeObjectType;
